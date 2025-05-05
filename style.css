@@ -1,0 +1,303 @@
+.header {
+  position: absolute;
+  background-color: #222831;
+  width: 100%;
+  color: white;
+  text-align: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: 10px;
+}
+
+body {
+  background-color: white;
+}
+
+.header h1 {
+  font-size: 36px;
+  text-align: center;
+}
+
+.header p {
+  font-size: 24px;
+  margin: 5px;
+}
+
+.container {
+  background-color: white;
+  max-width: 100%;
+  margin: auto;
+  padding: 20px;
+  margin-top: 80px;
+}
+
+.headmenu {
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.searchInput {
+  width: 80%;
+  height: 36px;
+  border-radius: 50px;
+  font-size: 28px;
+  padding-left: 20px;
+  border: 1px solid #686D76;
+  margin: 5px;
+  text-align: center;
+  display: flex;
+}
+
+.addbutton {
+  border-radius: 50px;
+  height: 50px;
+  width: 12%;
+  border: none;
+  background-color: #EEEEEE;
+}
+
+.addbutton:hover {
+  background-color: gray;
+  color: white;
+  font-weight: bold;
+}
+
+.addbutton:active {
+  background-color: black;
+  color: white;
+  font-weight: bold;
+}
+
+.judul {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.Bform {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #eeeeee;
+}
+
+.Blist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background-color: white;
+  padding: 10px;
+}
+
+.layoutbutton {
+  text-align: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.layoutbutton button {
+  text-align: center;
+  width: 10%;
+  border-radius: 50px;
+}
+
+/* Default Grid */
+
+.Blist.grid .book .btn-row-select {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layout Baris */
+.Blist.row {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.Blist.row .book {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: auto;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  gap: 15px;
+  background-color: #eeeeee;
+  border: 1px solid #ccc;
+}
+
+.Blist.row .book img {
+  height: 100px;
+  width: auto;
+  object-fit: contain;
+}
+
+.Blist.row .book button {
+  height: 50px;
+  width: 8%;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Full Layout */
+.Blist.full {
+  display: block;
+  position: relative;
+}
+
+.Blist.full .book {
+  width: 100%;
+  padding: 20px;
+  height: auto;
+  box-sizing: border-box;
+}
+
+.Blist.full .book img {
+  display: block;
+  margin: 10px auto;
+  width: 40%;
+  height: 500px;
+}
+
+.book {
+  background-color: #eeeeee;
+  color: black;
+  border: 1px solid gray;
+  padding: 10px;
+  width: 19%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height:680px;
+}
+
+.book img {
+  justify-content: flex-center;
+}
+
+.addmodal,
+.editmodal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.addmodal-content,
+.editmodal-content {
+  background-color: white;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.image-preview {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 10px;
+  border-right: 1px solid #ccc;
+  max-width: 50%;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.form-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#editForm input,
+#editForm button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+#editForm button {
+  background-color: #222831;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#editForm button:hover {
+  background-color: #444;
+}
+/* Sembunyikan tombol di layout grid secara default */
+.Blist.grid .book .toggle-finish,
+.Blist.grid .book .edit-btn,
+.Blist.grid .book .delete-btn {
+  display: none;
+}
+
+/* Saat .book memiliki kelas 'expanded', tampilkan tombol */
+.Blist.grid .book.expanded .toggle-finish,
+.Blist.grid .book.expanded .edit-btn,
+.Blist.grid .book.expanded .delete-btn {
+  display: inline-block;
+}
+/* Awalnya tombol dan info tersembunyi di grid */
+.Blist.grid .book .toggle-finish,
+.Blist.grid .book .edit-btn,
+.Blist.grid .book .delete-btn,
+.Blist.grid .book .start,
+.Blist.grid .book .finish {
+  display: none;
+}
+
+.Blist.grid .book {
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  height: 680px; /* tinggi default item grid tertutup */
+}
+
+/* Saat .expanded, munculkan semua konten dan biarkan tinggi memanjang */
+.Blist.grid .book.expanded {
+  max-height: 1000px;
+  padding-bottom: 10px;
+}
+
+.Blist.grid .book.expanded .toggle-finish,
+.Blist.grid .book.expanded .edit-btn,
+.Blist.grid .book.expanded .delete-btn,
+.Blist.grid .book.expanded .start,
+.Blist.grid .book.expanded .finish {
+  display: block;
+}
+.Blist.grid .book {
+  overflow: hidden;
+  max-height: 450px; /* Ukuran kecil ketika pertama kali dimuat */
+  transition: max-height 0.3s ease, padding 0.3s ease; /* Tambahkan transisi pada max-height */
+}
