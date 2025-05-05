@@ -298,6 +298,6 @@ body {
 }
 .Blist.grid .book {
   overflow: hidden;
-  max-height: 450px; /* Ukuran kecil ketika pertama kali dimuat */
+  max-height: 470px; /* Ukuran kecil ketika pertama kali dimuat */
   transition: max-height 0.3s ease, padding 0.3s ease; /* Tambahkan transisi pada max-height */
 }
