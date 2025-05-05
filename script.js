@@ -2,6 +2,8 @@ let currentBookIndex = 0;
 let booksData = [];
 let currentLayout = 'grid';
 
+const BACKEND_URL = 'https://fceb5d07-69eb-446f-8b29-0ba4a2d76f95-00-1usntt1kgekqz.pike.repl.co';
+
 const Blist = document.getElementById('Blist');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
@@ -79,19 +81,19 @@ function updateNavigation(data = booksData) {
 }
 
 function loadBooks() {
-    fetch('http://localhost:5000/api/books')
+    fetch(`${BACKEND_URL}/api/books`)
         .then(res => res.json())
         .then(data => {
             booksData = data;
             currentBookIndex = 0;
-            setLayout('grid'); // Pastikan layout default adalah grid
+            setLayout('grid');
             renderBooks();
         })
         .catch(err => console.error('Gagal memuat buku:', err));
 }
 
 function toggleFinishStatus(bookId, status) {
-    fetch(`http://localhost:5000/api/books/${bookId}/finish`, {
+    fetch(`${BACKEND_URL}/api/books/${bookId}/finish`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isFinished: status }),
@@ -101,7 +103,7 @@ function toggleFinishStatus(bookId, status) {
 }
 
 function showEditForm(bookId) {
-    fetch(`http://localhost:5000/api/books/${bookId}`)
+    fetch(`${BACKEND_URL}/api/books/${bookId}`)
         .then(res => res.json())
         .then(book => {
             editForm['editTitle'].value = book.title;
@@ -114,7 +116,7 @@ function showEditForm(bookId) {
 }
 
 function updateBook(bookId, bookData) {
-    fetch(`http://localhost:5000/api/books/${bookId}`, {
+    fetch(`${BACKEND_URL}/api/books/${bookId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookData),
@@ -125,7 +127,7 @@ function updateBook(bookId, bookData) {
 
 function deleteBook(bookId) {
     if (confirm('Yakin ingin menghapus buku ini?')) {
-        fetch(`http://localhost:5000/api/books/${bookId}`, {
+        fetch(`${BACKEND_URL}/api/books/${bookId}`, {
             method: 'DELETE',
         })
             .then(() => loadBooks())
@@ -150,7 +152,6 @@ function closeEditModal() {
     editModal.style.display = 'none';
 }
 
-// FITUR PENCARIAN
 searchInput.addEventListener('input', function (e) {
     const keyword = e.target.value.toLowerCase();
     const filteredBooks = booksData.filter(book =>
@@ -161,7 +162,6 @@ searchInput.addEventListener('input', function (e) {
     renderBooks(filteredBooks);
 });
 
-// INISIALISASI
 document.addEventListener('DOMContentLoaded', () => {
     loadBooks();
 
@@ -196,16 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Menangani klik pada elemen buku
     Blist.addEventListener('click', (e) => {
         const target = e.target;
         const id = target.dataset.id;
 
-        // Toggle expand hanya pada layout grid
         if (currentLayout === 'grid' && target.closest('.book')) {
             const bookDiv = target.closest('.book');
-
-            // Jika tombol lain (edit, hapus, toggle-finish) yang diklik, tidak usah toggle expand
             if (!target.classList.contains('toggle-finish') &&
                 !target.classList.contains('edit-btn') &&
                 !target.classList.contains('delete-btn')) {
