@@ -1,85 +1,211 @@
+let currentBookIndex = 0;
 let booksData = [];
 let currentLayout = 'grid';
-
-const BACKEND_URL = 'https://fceb5d07-69eb-446f-8b29-0ba4a2d76f95-00-1usntt1kgekqz.pike.replit.dev';
 
 const Blist = document.getElementById('Blist');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
-@@ -79,19 +81,19 @@
+const editForm = document.getElementById('editForm');
+const editModal = document.getElementById('editModal');
+const searchInput = document.getElementById('searchInput');
+
+function createBookElement(book) {
+    const div = document.createElement('div');
+    div.className = 'book';
+
+    const img = book.coverUrl ? `<img src="${book.coverUrl}" alt="${book.title}" />` : '';
+    const startText = book.startdate
+        ? `<p class="start" style="color:gray;">📘 Mulai dibaca: ${new Date(book.startdate).toLocaleString()}</p>` : '';
+
+    const finishText = book.isFinished
+        ? `<p class="finish" style="color:green;">✅ Selesai dibaca: ${new Date(book.finishDate).toLocaleString()}</p>
+           <button class="toggle-finish" data-id="${book._id}" data-status="false">Batal Tandai Dibaca</button>`
+        : `<button class="toggle-finish" data-id="${book._id}" data-status="true">Tandai Selesai Dibaca</button>`;
+
+    div.innerHTML = `
+        ${img}
+        <h3>${book.title}</h3>
+        <p>Penulis: ${book.author}</p>
+        ${startText}
+        ${finishText}
+        <button class="edit-btn" data-id="${book._id}">Edit</button>
+        <button class="delete-btn" data-id="${book._id}">Hapus</button>
+    `;
+
+    return div;
+}
+
+function openAddModal() {
+    document.getElementById('addModal').style.display = 'flex';
+}
+
+function closeAddModal() {
+    document.getElementById('addModal').style.display = 'none';
+}
+
+document.getElementById("coverFile").addEventListener("change", function (e) {
+    const reader = new FileReader();
+    reader.onload = function () {
+        const img = document.getElementById("previewImage");
+        img.src = reader.result;
+        img.style.display = "block";
+    };
+    if (e.target.files[0]) {
+        reader.readAsDataURL(e.target.files[0]);
+    }
+});
+
+function renderBooks(data = booksData) {
+    Blist.innerHTML = '';
+    if (currentLayout === 'full') {
+        const book = data[currentBookIndex];
+        Blist.appendChild(createBookElement(book));
+    } else {
+        data.forEach(book => {
+            Blist.appendChild(createBookElement(book));
+        });
+    }
+    updateNavigation(data);
+}
+
+function updateNavigation(data = booksData) {
+    if (currentLayout === 'full') {
+        prevBtn.style.display = nextBtn.style.display = 'inline-block';
+        prevBtn.disabled = currentBookIndex <= 0;
+        nextBtn.disabled = currentBookIndex >= data.length - 1;
+    } else {
+        prevBtn.style.display = nextBtn.style.display = 'none';
+    }
 }
 
 function loadBooks() {
-    fetch(`${BACKEND_URL}/api/books`)
+    fetch('http://localhost:5000/api/books')
         .then(res => res.json())
         .then(data => {
             booksData = data;
             currentBookIndex = 0;
-            setLayout('grid');
+            setLayout('grid'); // Pastikan layout default adalah grid
             renderBooks();
         })
         .catch(err => console.error('Gagal memuat buku:', err));
 }
 
 function toggleFinishStatus(bookId, status) {
-    fetch(`${BACKEND_URL}/api/books/${bookId}/finish`, {
+    fetch(`http://localhost:5000/api/books/${bookId}/finish`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isFinished: status }),
-@@ -101,7 +103,7 @@
+    })
+        .then(() => loadBooks())
+        .catch(err => console.error('Gagal ubah status:', err));
 }
 
 function showEditForm(bookId) {
-    fetch(`${BACKEND_URL}/api/books/${bookId}`)
+    fetch(`http://localhost:5000/api/books/${bookId}`)
         .then(res => res.json())
         .then(book => {
             editForm['editTitle'].value = book.title;
-@@ -114,7 +116,7 @@
+            editForm['editAuthor'].value = book.author;
+            editForm['editCoverUrl'].value = book.coverUrl || '';
+            editForm.setAttribute('data-edit-id', book._id);
+            editModal.style.display = 'flex';
+        })
+        .catch(err => console.error('Gagal ambil data buku:', err));
 }
 
 function updateBook(bookId, bookData) {
-    fetch(`${BACKEND_URL}/api/books/${bookId}`, {
+    fetch(`http://localhost:5000/api/books/${bookId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookData),
-@@ -125,7 +127,7 @@
+    })
+        .then(() => loadBooks())
+        .catch(err => console.error('Gagal update buku:', err));
+}
 
 function deleteBook(bookId) {
     if (confirm('Yakin ingin menghapus buku ini?')) {
-        fetch(`${BACKEND_URL}/api/books/${bookId}`, {
+        fetch(`http://localhost:5000/api/books/${bookId}`, {
             method: 'DELETE',
         })
             .then(() => loadBooks())
-@@ -150,7 +152,6 @@
+            .catch(err => console.error('Gagal hapus buku:', err));
+    }
+}
+
+function setLayout(mode) {
+    currentLayout = mode;
+    Blist.className = 'Blist ' + mode;
+    currentBookIndex = 0;
+    renderBooks();
+}
+
+function navigateBook(direction) {
+    if (currentLayout !== 'full') return;
+    currentBookIndex = Math.max(0, Math.min(booksData.length - 1, currentBookIndex + direction));
+    renderBooks();
+}
+
+function closeEditModal() {
     editModal.style.display = 'none';
 }
 
-
+// FITUR PENCARIAN
 searchInput.addEventListener('input', function (e) {
     const keyword = e.target.value.toLowerCase();
     const filteredBooks = booksData.filter(book =>
-@@ -161,7 +162,6 @@
+        book.title.toLowerCase().includes(keyword) ||
+        book.author.toLowerCase().includes(keyword)
+    );
+    if (currentLayout === 'full') setLayout('grid');
     renderBooks(filteredBooks);
 });
 
-
+// INISIALISASI
 document.addEventListener('DOMContentLoaded', () => {
     loadBooks();
 
-@@ -196,34 +196,30 @@
+    document.getElementById('openAddModal').addEventListener('click', openAddModal);
+
+    document.querySelectorAll('[data-layout]').forEach(button => {
+        button.addEventListener('click', () => setLayout(button.dataset.layout));
+    });
+
+    prevBtn.addEventListener('click', () => navigateBook(-1));
+    nextBtn.addEventListener('click', () => navigateBook(1));
+
+    editForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = editForm['editTitle'].value;
+        const author = editForm['editAuthor'].value;
+        const coverUrlInput = editForm['editCoverUrl'].value;
+        const coverFile = editForm['editCoverFile'].files[0];
+        const bookId = editForm.getAttribute('data-edit-id');
+
+        const handleSubmit = (coverUrl) => {
+            updateBook(bookId, { title, author, coverUrl });
+            closeEditModal();
+        };
+
+        if (coverFile) {
+            const reader = new FileReader();
+            reader.onload = () => handleSubmit(reader.result);
+            reader.readAsDataURL(coverFile);
+        } else {
+            handleSubmit(coverUrlInput.trim());
         }
     });
 
-
+    // Menangani klik pada elemen buku
     Blist.addEventListener('click', (e) => {
         const target = e.target;
         const id = target.dataset.id;
 
-
+        // Toggle expand hanya pada layout grid
         if (currentLayout === 'grid' && target.closest('.book')) {
             const bookDiv = target.closest('.book');
 
-
+            // Jika tombol lain (edit, hapus, toggle-finish) yang diklik, tidak usah toggle expand
             if (!target.classList.contains('toggle-finish') &&
                 !target.classList.contains('edit-btn') &&
                 !target.classList.contains('delete-btn')) {
