@@ -79,12 +79,12 @@ function updateNavigation(data = booksData) {
 }
 
 function loadBooks() {
-    fetch('${BACKEND_URL}/api/books')
+    fetch(`${BACKEND_URL}/api/books`)
         .then(res => res.json())
         .then(data => {
             booksData = data;
             currentBookIndex = 0;
-            setLayout('grid'); // Pastikan layout default adalah grid
+            setLayout('grid');
             renderBooks();
         })
         .catch(err => console.error('Gagal memuat buku:', err));
@@ -201,11 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = e.target;
         const id = target.dataset.id;
 
-        // Toggle expand hanya pada layout grid
         if (currentLayout === 'grid' && target.closest('.book')) {
             const bookDiv = target.closest('.book');
 
-            // Jika tombol lain (edit, hapus, toggle-finish) yang diklik, tidak usah toggle expand
             if (!target.classList.contains('toggle-finish') &&
                 !target.classList.contains('edit-btn') &&
                 !target.classList.contains('delete-btn')) {
