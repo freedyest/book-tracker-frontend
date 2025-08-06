@@ -1,40 +1,81 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Tracker</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
 </head>
 <body>
   <div class="header">
-    <h1>Book Tracker</h1>
-    <button id="addBtn">+ Tambah Buku</button>
+    <h1>BoRead</h1>
+    <p>my reading list</p>
   </div>
-
-  <div id="Blist" class="book-list"></div>
-
-  <!-- Modal Tambah Buku -->
-  <div id="addModal" class="modal hidden">
-    <div class="modal-content">
-      <h2>Tambah Buku</h2>
-      <form id="Bform">
-        <label>Judul:</label>
-        <input type="text" id="title" required />
-
-        <label>Penulis:</label>
-        <input type="text" id="author" required />
-
-        <label>URL Sampul (opsional):</label>
-        <input type="url" id="coverUrl" placeholder="https://..." />
-
-        <label>Upload Gambar (opsional):</label>
-        <input type="file" id="coverFile" accept="image/*" />
-
-        <button type="submit">Simpan</button>
-        <button type="button" onclick="closeAddModal()">Batal</button>
-      </form>
+  <div class="container">
+    <h1 class="judul">📚 Daftar Buku</h1>
+    <div class="headmenu">
+      <input type="text" class="searchInput" id="searchInput" placeholder="Cari judul buku/nama penulis..." />
+      <button id="openAddModal" class="addbutton">➕ Tambah Buku</button>
     </div>
+    <div class="layoutbutton">
+      <button onclick="setLayout('grid')">
+        <span class="material-icons">grid_on</span> Grid
+      </button>
+      <button onclick="setLayout('row')">
+        <span class="material-icons">view_list</span> Baris
+      </button>
+      <button onclick="setLayout('full')">
+        <span class="material-icons">aspect_ratio</span> Full
+      </button>
+    </div>
+
+    <!-- Modal add -->
+    <div id="addModal" class="addmodal">
+      <div class="addmodal-content">
+        <span class="close-button" onclick="closeAddModal()">&times;</span>
+        <div class="addmodal-body">
+          <div class="image-preview">
+            <img id="previewImage" src="#" alt="Preview Gambar" style="display: none;" />
+          </div>
+          <form id="Bform" class="form-input">
+            <input type="text" id="title" placeholder="Judul" required />
+            <input type="text" id="author" placeholder="Penulis" required />
+            <input type="text" id="coverUrl" placeholder="URL Sampul (opsional)" />
+            <input type="file" id="coverFile" accept="image/*" />
+            <button type="submit">Tambah Buku</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Edit -->
+    <div id="editModal" class="editmodal">
+      <div class="editmodal-content">
+        <span class="close-button" onclick="closeEditModal()">&times;</span>
+        <form id="editForm">
+          <input type="text" id="editTitle" placeholder="Judul Buku" required />
+          <input type="text" id="editAuthor" placeholder="Penulis" required />
+          <input type="url" id="editCoverUrl" placeholder="URL Gambar" />
+          <input type="file" id="editCoverFile" accept="image/*" />
+          <button type="submit">Simpan Perubahan</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Buku (Info Buku) -->
+    <div id="bookModal" class="book-modal" style="display:none;">
+      <div id="bookModalContent"></div>
+      <button id="closeBookModalBtn" onclick="closeBookModal()">Tutup</button>
+    </div>
+
+    <div id="Blist" class="Blist"></div>
+
+
+    <!-- HTML untuk tombol navigasi -->
+    <button id="prevBtn" style="display:none;">&lt; Prev</button>
+    <button id="nextBtn" style="display:none;">Next &gt;</button>
+
   </div>
 
   <script src="script.js"></script>
