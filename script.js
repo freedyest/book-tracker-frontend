@@ -42,6 +42,51 @@ function openAddModal() {
 function closeAddModal() {
     document.getElementById('addModal').style.display = 'none';
 }
+const addForm = document.getElementById('Bform');
+
+addForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const title = document.getElementById('title').value.trim();
+  const author = document.getElementById('author').value.trim();
+  const coverUrlInput = document.getElementById('coverUrl').value.trim();
+  const coverFile = document.getElementById('coverFile').files[0];
+
+  const handleSubmit = (coverUrl) => {
+    fetch(`${BACKEND_URL}/api/books`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, author, coverUrl }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Gagal menambahkan buku');
+        return res.json();
+      })
+      .then(() => {
+        closeAddModal();
+        loadBooks();
+        addForm.reset();
+        document.getElementById("previewImage").style.display = "none";
+      })
+      .catch((err) => {
+        console.error('❌ Error tambah buku:', err);
+        alert('Gagal menambahkan buku');
+      });
+  };
+
+  if (!title || !author) {
+    alert("Judul dan Penulis wajib diisi!");
+    return;
+  }
+
+  if (coverFile) {
+    const reader = new FileReader();
+    reader.onload = () => handleSubmit(reader.result);
+    reader.readAsDataURL(coverFile);
+  } else {
+    handleSubmit(coverUrlInput || '');
+  }
+});
 
 document.getElementById("coverFile").addEventListener("change", function (e) {
     const reader = new FileReader();
