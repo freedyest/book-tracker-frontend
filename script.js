@@ -79,7 +79,7 @@ function updateNavigation(data = booksData) {
 }
 
 function loadBooks() {
-    fetch('http://localhost:5000/api/books')
+    fetch('${BACKEND_URL}/api/books')
         .then(res => res.json())
         .then(data => {
             booksData = data;
@@ -91,7 +91,7 @@ function loadBooks() {
 }
 
 function toggleFinishStatus(bookId, status) {
-    fetch(`http://localhost:5000/api/books/${bookId}/finish`, {
+    fetch(`${BACKEND_URL}/api/books/${bookId}/finish`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isFinished: status }),
@@ -101,7 +101,7 @@ function toggleFinishStatus(bookId, status) {
 }
 
 function showEditForm(bookId) {
-    fetch(`http://localhost:5000/api/books/${bookId}`)
+    fetch(`${BACKEND_URL}/api/books/${bookId}`)
         .then(res => res.json())
         .then(book => {
             editForm['editTitle'].value = book.title;
@@ -114,7 +114,7 @@ function showEditForm(bookId) {
 }
 
 function updateBook(bookId, bookData) {
-    fetch(`http://localhost:5000/api/books/${bookId}`, {
+    fetch(`${BACKEND_URL}/api/books/${bookId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookData),
@@ -125,7 +125,7 @@ function updateBook(bookId, bookData) {
 
 function deleteBook(bookId) {
     if (confirm('Yakin ingin menghapus buku ini?')) {
-        fetch(`http://localhost:5000/api/books/${bookId}`, {
+        fetch(`${BACKEND_URL}/api/books/${bookId}`, {
             method: 'DELETE',
         })
             .then(() => loadBooks())
