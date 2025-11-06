@@ -1,7 +1,8 @@
 let currentBookIndex = 0;
 let booksData = [];
 let currentLayout = 'grid';
-const BACKEND_URL = 'https://fceb5d07-69eb-446f-8b29-0ba4a2d76f95-00-1usntt1kgekqz.pike.replit.dev/';
+const API_URL = "https://corsproxy.io/?" + encodeURIComponent("https://fceb5d07-69eb-446f-8b29-0ba4a2d76f95-00-1usntt1kgekqz.pike.replit.dev/api/books");
+
 const Blist = document.getElementById('Blist');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
